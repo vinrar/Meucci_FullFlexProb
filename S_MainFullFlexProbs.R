@@ -50,36 +50,36 @@ Y <- as.matrix(Infl[1:lenSnP])
                         p = p/sum(p);
                       }
                       
-  else if(DefineProbs == 2){ lmd = 0.0166;
+  if(DefineProbs == 2){ lmd = 0.0166;
                         p <- exp(-lmd * (t(T-t(seq(1:T))))); 
                         p = p/sum(p);
                         }
                         
-       else if(DefineProbs == 3){ Cond <- (Y >= 2.8);
+  if(DefineProbs == 3){ Cond <- (Y >= 2.8);
                                   p[Cond] <- 1; 
                                   p <- p/sum(p);
                                   }
                                   
-          else if(DefineProbs == 4){ y <- 3;
-                                       for( i in 1:lenSnP) { Yd[i] = (Y[i+1]) - (Y[i])} ;
-                                                             h2 <- cov(Yd);
-                                                             p <- dmvnorm(Y,y,h2); 
-                                                             p <- p/sum(p);
-                                                           }
-                                                           
-			     else if (DefineProbs == 5){ y <- 3;
-                                             h2 <- NaN;
-                                             h2 <- cov(1*diff(Y));
-                                             p <- LeastInfoKernel( Y, y, h2);
+  if(DefineProbs == 4){ y <- 3;
+                       for( i in 1:lenSnP) { Yd[i] = (Y[i+1]) - (Y[i])} ;
+                                             h2 <- cov(Yd);
+                                             p <- dmvnorm(Y,y,h2); 
+                                             p <- p/sum(p);
                                            }
+                                                           
+  if (DefineProbs == 5){ y <- 3;
+                         h2 <- NaN;
+                         h2 <- cov(1*diff(Y));
+                         p <- LeastInfoKernel( Y, y, h2);
+                       }
                                            
-				      else if (DefineProbs == 6){ l_c <- 0.0055;
-                                                  l_s <- 0.0166;
-                                                  res <- DoubleDecay( X, l_c, l_s);
-                                                  m <-res[1];
-                                                  S <- res[2];
-                                                  p <- Fit2Moms( X, m, S);
-                                                  }
+  if (DefineProbs == 6){ l_c <- 0.0055;
+                         l_s <- 0.0166;
+                         res <- DoubleDecay( X, l_c, l_s);
+                         m <-res[1];
+                         S <- res[2];
+                         p <- Fit2Moms( X, m, S);
+                        }
                       
  #################               
  # P&L scenarios #
