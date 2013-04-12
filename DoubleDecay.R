@@ -11,8 +11,7 @@ DoubleDecay <- function(X, lmd_c, lmd_s)
   p_c <- p_c/sum(p_c);
   p_c <- p_c[ , rep(seq_len(ncol(p_c)), N)]
   
-
-  S_1 <- t((p_c %*% X))%*% X;
+  S_1 <- t((p_c * X))%*% X;
   C <- cov2cor(S_1);
 
   p_s <- exp(-lmd_s*(t(T-t(seq(1:T)))));
