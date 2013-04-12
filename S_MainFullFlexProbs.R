@@ -44,42 +44,40 @@ Y <- as.matrix(Infl[1:lenSnP])
   T <- dim(X)[1]
   p <- matrix(0,T,1)
   
-  if(DefineProbs == 1){ tau = 2*252;
+  switch(DefineProbs,
+   {                    tau = 2*252;
                         p[1:tau] = 1;
                         p = as.matrix(p) ;
-                        p = p/sum(p);
-                      }
-                      
-  if(DefineProbs == 2){ lmd = 0.0166;
-                        p <- exp(-lmd * (t(T-t(seq(1:T))))); 
-                        p = p/sum(p);
-                        }
+                        p = p/sum(p);}, # 1
                         
-  if(DefineProbs == 3){ Cond <- (Y >= 2.8);
-                                  p[Cond] <- 1; 
-                                  p <- p/sum(p);
-                                  }
-                                  
-  if(DefineProbs == 4){ y <- 3;
+   {                    lmd = 0.0166;
+                        p <- exp(-lmd * (t(T-t(seq(1:T))))); 
+                        p = p/sum(p);}, # 2
+                        
+   {                    Cond <- (Y >= 2.8);
+                        p[Cond] <- 1; 
+                        p <- p/sum(p);}, # 3
+                        
+   {                   y <- 3;
                        for( i in 1:lenSnP) { Yd[i] = (Y[i+1]) - (Y[i])} ;
                                              h2 <- cov(Yd);
                                              p <- dmvnorm(Y,y,h2); 
                                              p <- p/sum(p);
-                                           }
-                                                           
-  if (DefineProbs == 5){ y <- 3;
+                        }, # 4
+                        
+   {                     y <- 3;
                          h2 <- NaN;
                          h2 <- cov(1*diff(Y));
-                         p <- LeastInfoKernel( Y, y, h2);
-                       }
-                                           
-  if (DefineProbs == 6){ l_c <- 0.0055;
+                         p <- LeastInfoKernel( Y, y, h2);}, # 5
+                         
+   {                     l_c <- 0.0055;
                          l_s <- 0.0166;
                          res <- DoubleDecay( X, l_c, l_s);
                          m <-res[1];
                          S <- res[2];
-                         p <- Fit2Moms( X, m, S);
-                        }
+                         p <- Fit2Moms( X, m, S)} #6 
+                         )
+   
                       
  #################               
  # P&L scenarios #
