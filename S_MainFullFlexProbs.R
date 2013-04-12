@@ -107,7 +107,7 @@ switch(DefineProbs,
  for (n in 1: N) {
  
         Call_1 <- CallPrice(S_T, K(n), rf_T, Expiry[n]-1/252, vol_T);
-        Call _0 <- CallPrice(S_0, K(n), rf_0, Expiry[n], vol_0);
+        Call_0 <- CallPrice(S_0, K(n), rf_0, Expiry[n], vol_0);
         PnL[,n] <- Call_1 - Call_0;
          
  }
