@@ -43,47 +43,44 @@ Y <- as.matrix(Infl[1:lenSnP])
 
   T <- dim(X)[1]
   p <- matrix(0,T,1)
-
-
-switch(DefineProbs,
-   {                    
-                        tau = 2*252;
+  
+  if(DefineProbs == 1){ tau = 2*252;
                         p[1:tau] = 1;
                         p = as.matrix(p) ;
-                        p = p/sum(p);}, # 1
-
-   {
-                        lmd = 0.0166;
+                        p = p/sum(p);
+                      }
+                      
+  if(DefineProbs == 2){ lmd = 0.0166;
                         p <- exp(-lmd * (t(T-t(seq(1:T))))); 
                         p = p/sum(p);
-                        }, # 2
-   {                            
-                        Cond <- (Y >= 2.8);
-                        p[Cond] <- 1; 
-                        p <- p/sum(p);
-                        }, # 3
-   {
-                       y <- 3;
+                        }
+                        
+  if(DefineProbs == 3){ Cond <- (Y >= 2.8);
+                                  p[Cond] <- 1; 
+                                  p <- p/sum(p);
+                                  }
+                                  
+  if(DefineProbs == 4){ y <- 3;
                        for( i in 1:lenSnP) { Yd[i] = (Y[i+1]) - (Y[i])} ;
                                              h2 <- cov(Yd);
                                              p <- dmvnorm(Y,y,h2); 
                                              p <- p/sum(p);
-                        }, # 4
-   {
-                         y <- 3;
+                                           }
+                                                           
+  if (DefineProbs == 5){ y <- 3;
                          h2 <- NaN;
                          h2 <- cov(1*diff(Y));
                          p <- LeastInfoKernel( Y, y, h2);
-                       }, # 5
-   { 
-                         l_c <- 0.0055;
+                       }
+                                           
+  if (DefineProbs == 6){ l_c <- 0.0055;
                          l_s <- 0.0166;
                          res <- DoubleDecay( X, l_c, l_s);
                          m <-res[1];
                          S <- res[2];
                          p <- Fit2Moms( X, m, S);
-                        } ) # 6
-  
+                        }
+                      
  #################               
  # P&L scenarios #
  #################
@@ -103,17 +100,17 @@ switch(DefineProbs,
  rf_T <- rf_0 * exp(X[,3]);
  
  #securities scenario
- 
+ PnL <- matrix(0,(length(SnP)-1),N)
  for (n in 1: N) {
  
-        Call_1 <- CallPrice(S_T, K(n), rf_T, Expiry[n]-1/252, vol_T);
-        Call_0 <- CallPrice(S_0, K(n), rf_0, Expiry[n], vol_0);
-        PnL[,n] <- Call_1 - Call_0;
+        Call_1 <- CallPrice(S_T, K[n], rf_T, (Expiry[n]-(1/252)), vol_T);
+        Call_0 <- CallPrice(S_0, K[n], rf_0, Expiry[n], vol_0);
+        PnL[,n] <- as.matrix(Call_1 - Call_0);
          
  }
  
  #portfolio scenarios
- A <- matrix(1,T,1)
+ A <- matrix(1,N/2,1)
  B <- -1*A
  u <- -rbind(B,A)
- PnL_u <- Pnl*u;
+ PnL_u <- PnL%*%u;
