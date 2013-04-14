@@ -39,7 +39,7 @@ Y <- as.matrix(Infl[1:lenSnP])
 # DefineProbs = 5 : partial information prox. kernel damping
 # DefineProbs = 6 : partial information: match covariance
 
-  DefineProbs <- 6
+  DefineProbs <- 5
 
   T <- dim(X)[1]
   p <- matrix(0,T,1)
@@ -73,9 +73,11 @@ Y <- as.matrix(Infl[1:lenSnP])
    {                     l_c <- 0.0055;
                          l_s <- 0.0166;
                          res <- DoubleDecay( X, l_c, l_s);
-                         m <-res[1];
-                         S <- res[2];
+                         m <-res[[1]];
+                         m <- as.matrix(m)
+                         S <- res[[2]];
                          p <- Fit2Moms( X, m, S)} #6 
+                         
                          )
    
                       
